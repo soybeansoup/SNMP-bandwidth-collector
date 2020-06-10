@@ -14,7 +14,7 @@ def get_info(domain_list):
     for domain in domain_list:
         errorIndication, errorStatus, errorIndex, varBinds = next(
             getCmd(SnmpEngine(),
-                   CommunityData('Canopyro', mpModel=1),
+                   CommunityData('Public', mpModel=1),
                    UdpTransportTarget((domain, 161)),
                    ContextData(),
                    ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysName', 0)),
