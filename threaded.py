@@ -4,21 +4,14 @@ from pysnmp.hlapi import *
 import argparse
 import threading
 
-
+# Handles arguments for input.
 parser = argparse.ArgumentParser()
 parser.add_argument('path_to_domain_list', help='domain list to read from')
 args = parser.parse_args()
 
 with open(args.path_to_domain_list) as file: domain_list = [line.strip() for line in file]
 
-print(len(domain_list))
-print(round(len(domain_list)/5))
-print(round(len(domain_list)/5*2))
-print(round(len(domain_list)/5*3))
-print(round(len(domain_list)/5*4))
-print(len(domain_list))
-
-
+# Output handling happens here.
 file_name = 'threaded_data_log.txt'
 log_data = open(file_name, 'a+')
 
@@ -28,7 +21,7 @@ def get_info(domain_list, write_file):
         domain_data=[] # Initializes list to later write data from (single line per domain).
         errorIndication, errorStatus, errorIndex, varBinds = next(
             getCmd(SnmpEngine(),
-                   CommunityData('Canopyro', mpModel=1), # Assigns community string to SNMP request and sets V.
+                   CommunityData('public', mpModel=1), # Assigns community string to SNMP request and sets V.
                    UdpTransportTarget((domain, 161)),
                    ContextData(),
                    ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysName', 0)),
