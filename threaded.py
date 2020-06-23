@@ -1,22 +1,16 @@
 #!/usr/bin/python
-
 from pysnmp.hlapi import *
 import argparse
 import threading
 
-# Handles arguments for input.
 parser = argparse.ArgumentParser()
 parser.add_argument('path_to_domain_list', help='domain list to read from')
 args = parser.parse_args()
-
 with open(args.path_to_domain_list) as file: domain_list = [line.strip() for line in file]
-
-# Output handling happens here.
-file_name = 'threaded_data_log.txt'
-log_data = open(file_name, 'a+')
+log_data = []
 
 
-def get_info(domain_list, write_file):
+def get_info(domain_list, log_data):
     for domain in domain_list:
         domain_data=[] # Initializes list to later write data from (single line per domain).
         errorIndication, errorStatus, errorIndex, varBinds = next(
@@ -32,7 +26,7 @@ def get_info(domain_list, write_file):
                    ObjectType(ObjectIdentity('IF-MIB', 'ifHCOutUcastPkts', 1)),
                    ObjectType(ObjectIdentity('IF-MIB', 'ifCounterDiscontinuityTime', 1)))
         )
-        
+
         if errorIndication:
             print(errorIndication)
         elif errorStatus:
@@ -41,9 +35,7 @@ def get_info(domain_list, write_file):
         else:
             for varBind in varBinds:
                 domain_data.append(str(varBind[1])) # Index of 1 grabs only data with no MIB info/context data.
-            print(domain_data)
-            write_file.write(str(domain_data) + '\n')
-
+            log_data.append(" ".join(domain_data)) # merges data objects into single line and appends to log list
 
 
 # Splitting domain list for threading
@@ -59,7 +51,6 @@ t3 = threading.Thread(target=get_info, args=(third, log_data))
 t4 = threading.Thread(target=get_info, args=(fourth, log_data))
 t5 = threading.Thread(target=get_info, args=(fifth, log_data))
 
-
 t1.start()
 t2.start()
 t3.start()
@@ -72,4 +63,9 @@ t3.join()
 t4.join()
 t5.join()
 
-log_data.close()
+# Writes compiled data to log file
+file_name = 'threaded_data_log.txt'
+write_file = open(file_name, 'a+')
+for data in log_data:
+    write_file.write(str(data) + '\n')
+write_file.close()
