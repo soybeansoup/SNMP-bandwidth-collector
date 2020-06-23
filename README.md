@@ -2,7 +2,7 @@
 
 Example use: get_info.py domains.txt or threaded.py domains.txt
 
-Line 17 of get_info.py or line 31 in threaded.py needs to have community set from public to appropriate community string.
+Line 17 of get_info.py or line 18 in threaded.py needs to have community set from public to appropriate community string.
 
 The threaded version cuts time approximately in half.
 
