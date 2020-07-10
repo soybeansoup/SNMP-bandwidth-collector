@@ -45,23 +45,17 @@ third = domain_list[round(len(domain_list)/5*2):round(len(domain_list)/5*3)]
 fourth = domain_list[round(len(domain_list)/5*3):round(len(domain_list)/5*4)]
 fifth = domain_list[round(len(domain_list)/5*4):]
 
-t1 = threading.Thread(target=get_info, args=(first, log_data))
-t2 = threading.Thread(target=get_info, args=(second, log_data))
-t3 = threading.Thread(target=get_info, args=(third, log_data))
-t4 = threading.Thread(target=get_info, args=(fourth, log_data))
-t5 = threading.Thread(target=get_info, args=(fifth, log_data))
+to_thread = [ t1 = threading.Thread(target=get_info, args=(first, log_data)),
+              t2 = threading.Thread(target=get_info, args=(second, log_data)),
+              t3 = threading.Thread(target=get_info, args=(third, log_data)),
+              t4 = threading.Thread(target=get_info, args=(fourth, log_data)),
+              t5 = threading.Thread(target=get_info, args=(fifth, log_data)),
+            ]
 
-t1.start()
-t2.start()
-t3.start()
-t4.start()
-t5.start()
-
-t1.join()
-t2.join()
-t3.join()
-t4.join()
-t5.join()
+for thread in to_thread:
+    thread.start()
+for thread in to_thread:
+    thread.join()
 
 # Writes compiled data to log file
 file_name = 'threaded_data_log.txt'
